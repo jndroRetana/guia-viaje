@@ -1,54 +1,41 @@
-# Astro Starter Kit: Basics
+# Guía de viaje
 
-```sh
-npm create astro@latest -- --template basics
-```
+![project](./public/src-readme/image.png)
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+## Descripción
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Está aplicación web genera una guía turística con ChatGPT, donde te recomienda sitios para visitar según la ciudad que quieras visitar.
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+## Uso
 
-## 🚀 Project Structure
+1. Existen 2 inputs:
+    - El primer input es para ingresar la api key de ChatGPT. Este campo es obligatorio para que la aplicación funcione (una vez ingresado, no se debe borrar, ya que no se guarda esta información).
+    - El segundo input es para ingresar la ciudad que deseas visitar. Este valor cda que se cambie, se debe presionar el botón "Buscar" o dar enter en el teclado para que se actualice la información en el mapa.
 
-Inside of your Astro project, you'll see the following folders and files:
+![menu](./public/src-readme/menu.png)
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── components/
-│   │   └── Card.astro
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+2. Una vez ingresado el api key y la ciudad, se mostrará un mapa con la ubicación de la ciudad y una serie de pines de sitios turísticos recomendados por ChatGPT.
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+![map](./public/src-readme/map.png)
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+3. Al hacer click en un pin, se mostrará una ventana con la información del sitio turístico recomendado generada con ChatGPT.
 
-Any static assets, like images, can be placed in the `public/` directory.
+![info](./public/src-readme/info.png)
 
-## 🧞 Commands
+4. Al hacer click en el botón "<<" (se encuentra en la parte superior derecha del mapa, por default está expandido para mostrar la información.) se mostrará una ventana con la guía por días para visitar todos los sitios recomendados generada con ChatGPT.
 
-All commands are run from the root of the project, from a terminal:
+![info-guia](./public/src-readme/info-guia.png)
+![guia](./public/src-readme/guia.png)
+
+## 🧞 Comandos
+
+Todos los comandos se ejecutan desde la raíz del proyecto, desde una terminal:
 
 | Command                   | Action                                           |
 | :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+| `npm install`             | Instalar dependencias                            |
+| `npm run dev`             | Iniciar servidor local dev en `localhost:4321`      |
+| `npm run build`           | Construir sitio de producción para `./dist/`          |
+| `npm run preview`         | Vista previa del compilado local, antes de implementarla     |
+| `npm run astro ...`       | Ejecutar comandos CLI como `astro add`, `astro check` |
+| `npm run astro -- --help` | Obtener ayuda usando Astro CLI                     |
