@@ -1,0 +1,211 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Guía de viaje">
+  <main>
+    <section id="search">
+      <!-- create a search bar here -->
+      <form action="" method="post">
+        <input type="text" id="apiKeyChatGPT" placeholder="Escribe ltu key" />
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Escribe la ciudad a la que deseas viajar"
+        />
+        <button id="searchButton" type="submit">Buscar</button>
+      </form>
+    </section>
+    <section id="map">
+      <div id="viewDiv"></div>
+      <div id="itinerary" class="esri-widget">
+        <h1>Ruta turística por Madrid</h1>
+
+        <h2>Día 1</h2>
+        <p>
+          Visita al <strong>Museo del Prado</strong> para disfrutar de una de las
+          colecciones de arte más importantes del mundo. Después, paseo por el <strong
+            >Parque del Retiro</strong
+          > para relajarse y disfrutar de la naturaleza.
+        </p>
+      </div>
+    </section>
+    <div id="loader">
+      <div class="loader"></div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  @import "https://js.arcgis.com/4.30/@arcgis/core/assets/esri/themes/dark/main.css";
+  @import "https://js.arcgis.com/calcite-components/2.9.0/calcite.css";
+  main {
+    display: grid;
+    grid-template-rows: 30% 100%;
+  }
+  #search {
+    height: 100%;
+    width: 100%;
+    background-color: #252525;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* 
+	*/
+  }
+
+  input {
+    padding: 10px;
+    margin: 10px;
+    width: 85%;
+    /* 
+    width: 50%; 
+	*/
+  }
+  button {
+    padding: 10px;
+    margin: 10px;
+    width: 91%;
+    background-color: blue;
+    color: white;
+    font-weight: bold;
+  }
+
+  #loader {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: #252525;
+    opacity: 0.5;
+    position: fixed;
+    z-index: 999;
+    height: 100vh;
+    width: 100vw;
+    overflow: show;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+
+  /* HTML: <div class="loader"></div> */
+  .loader {
+    width: 40px;
+    height: 40px;
+    aspect-ratio: 1;
+    position: relative;
+    transform: rotate(45deg);
+  }
+  .loader:before,
+  .loader:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50% 50% 0 50%;
+    background: blue;
+    -webkit-mask: radial-gradient(circle 10px at 50% 50%, #0000 94%, #000);
+  }
+  .loader:after {
+    animation: l6 1s infinite;
+    transform: perspective(300px) translateZ(0px);
+  }
+  @keyframes l6 {
+    to {
+      transform: perspective(300px) translateZ(150px);
+      opacity: 0;
+    }
+  }
+
+  #itinerary {
+    width: 320px;
+    height: auto;
+    background-color: #2b2b2b;
+    padding: 15px;
+    border-shadow: 0 0 30px rgba(0, 0, 0, 1);
+
+    /* 
+	*/
+  }
+
+  @media screen and (min-width: 768px) {
+    main {
+      grid-template-rows: 15% 100%;
+    }
+
+    form {
+      flex-direction: row;
+    }
+
+    input {
+      width: 50%;
+      /* 
+    width: 50%; 
+	*/
+    }
+    button {
+      width: 20%;
+    }
+  }
+</style>
+
+<script>
+  import { createTrip } from "../js/map";
+  import { textStream, textItinerary } from "../js/steamTextAi";
+
+  const form = document.querySelector("form");
+  const loader = document.getElementById("loader");
+
+  form.addEventListener("submit", async (e) => {
+    loader.style.display = "flex";
+    e.preventDefault();
+    const costumerKey = e.target[0].value;
+    sessionStorage.setItem("apiKey", costumerKey);
+    const targetCity = e.target[1].value;
+
+    console.log(targetCity);
+    const coord = await textStream(
+      targetCity,
+      "getLocationCities",
+      loader,
+      costumerKey
+    );
+    const [longitud, latitud] = await JSON.parse(coord);
+    const type = await textStream(
+      targetCity,
+      "getIsCountryOrCity",
+      loader,
+      costumerKey
+    );
+    const locationMap = [parseFloat(longitud), parseFloat(latitud)];
+
+    const places = await textStream(
+      targetCity,
+      "getSuggestionsPlaces",
+      loader,
+      costumerKey
+    );
+    const placesnames = Object.keys(JSON.parse(places));
+    const textPlacesNames = placesnames.join(", ").replace(/_/g, " ");
+
+    textItinerary(
+      targetCity,
+      textPlacesNames,
+      "getItinerary",
+      loader,
+      costumerKey
+    );
+
+    createTrip(locationMap, JSON.parse(places), loader, type, costumerKey);
+
+    history.replaceState(null, "", location.pathname);
+  });
+</script>

@@ -1,0 +1,20 @@
+{
+  "name": "trip-map",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@ai-sdk/openai": "^0.0.36",
+    "@arcgis/core": "^4.30.7",
+    "@astrojs/check": "^0.8.0",
+    "ai": "^3.2.19",
+    "astro": "^4.11.5",
+    "typescript": "^5.5.3"
+  }
+}
