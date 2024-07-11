@@ -1,0 +1,1 @@
+export const TEXT_MESSAGE_ITINERARY = "Aquí encontraras información sobre el itinerario creado para los diferentes sitios a visitar en la ciudad seleccionada.";

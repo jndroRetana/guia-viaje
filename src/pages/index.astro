@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { TEXT_MESSAGE_ITINERARY } from "../js/utils/constants";
 ---
 
 <Layout title="Guía de viaje">
@@ -7,7 +8,7 @@ import Layout from "../layouts/Layout.astro";
     <section id="search">
       <!-- create a search bar here -->
       <form action="" method="post">
-        <input type="text" id="apiKeyChatGPT" placeholder="Escribe ltu key" />
+        <input type="text" id="apiKeyChatGPT" placeholder="Escribe tu app key de ChatGPT" />
         <input
           type="text"
           id="searchInput"
@@ -19,10 +20,7 @@ import Layout from "../layouts/Layout.astro";
     <section id="map">
       <div id="viewDiv"></div>
       <div id="itinerary" class="esri-widget">
-        <p>
-          Aquí encontraras información sobre el itinerario seleccionado para los
-          diferentes sitios a visitar en la ciudad seleccionada.
-        </p>
+        <p>{ TEXT_MESSAGE_ITINERARY }</p>
       </div>
     </section>
     <div id="loader">

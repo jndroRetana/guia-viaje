@@ -1,7 +1,8 @@
+import { TEXT_MESSAGE_ITINERARY } from "../index";
+
 export const defaultMessageItinerary = () => {
   const itinerary = document.querySelector("#itinerary");
-  itinerary.innerHTML =
-    "<p>Aquí encontraras información sobre el itinerario seleccionado para los diferentes sitios a visitar en la ciudad seleccionada.</p>";
+  itinerary.innerHTML = `<p>${TEXT_MESSAGE_ITINERARY}</p>`;
   return itinerary;
 };
 
