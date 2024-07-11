@@ -49,5 +49,5 @@ export const getInfoAboutPlaces = async (
 
 export const replaceCaracteres = (text) => {
     //remplazar caracteres con acentos
-    return text.replace(/á/g, "a").replace(/é/g, "e").replace(/í/g, "i").replace(/ó/g, "o").replace(/ú/g, "u");
+    return text.replaceAll("á", "a").replaceAll("é", "e").replaceAll("í", "i").replaceAll("ó", "o").replaceAll("ú", "u");
 }

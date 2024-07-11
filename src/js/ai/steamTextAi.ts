@@ -101,7 +101,7 @@ export const validateTextCity = async (
       prompt: prompts[promptName](location),
     });
 
-    return replaceCaracteres(result.text).toLowerCase();
+    return replaceCaracteres(result.text.toLowerCase());
   } catch (error) {
     return error.toString();
   }

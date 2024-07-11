@@ -93,7 +93,6 @@ export const showPoints = async (places, view, Graphic, Point, loader, costumerK
     const {longitud, latitud} = places[place];
 
     const locationMap = [longitud, latitud];
-    console.log("🚀 ~ Object.keys ~ locationMap:", locationMap)
     view.graphics.add(
       new Graphic({
         // // Data attributes returned

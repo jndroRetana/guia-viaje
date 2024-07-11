@@ -186,7 +186,6 @@ import Layout from "../layouts/Layout.astro";
     );
 	const nameCity = await validateTextCity(costumerKey, "getValidateNameCity", locationMap)
 	const nameCityValidate = nameCity === replaceCaracteres(targetCity).toLowerCase();
-	console.log("🚀 ~ form.addEventListener ~ nameCityValidate:", nameCityValidate)
 
     const isInvalidCity =
       (locationMap === null) ||
@@ -204,7 +203,6 @@ import Layout from "../layouts/Layout.astro";
         costumerKey
       );
 
-		console.log("🚀 ~ form.addEventListener ~ places", places)
 
       textItinerary(
         targetCity,
