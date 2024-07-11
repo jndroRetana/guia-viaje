@@ -19,14 +19,9 @@ import Layout from "../layouts/Layout.astro";
     <section id="map">
       <div id="viewDiv"></div>
       <div id="itinerary" class="esri-widget">
-        <h1>Ruta turística por Madrid</h1>
-
-        <h2>Día 1</h2>
         <p>
-          Visita al <strong>Museo del Prado</strong> para disfrutar de una de las
-          colecciones de arte más importantes del mundo. Después, paseo por el <strong
-            >Parque del Retiro</strong
-          > para relajarse y disfrutar de la naturaleza.
+          Aquí encontraras información sobre el itinerario seleccionado para los
+          diferentes sitios a visitar en la ciudad seleccionada.
         </p>
       </div>
     </section>
@@ -136,6 +131,11 @@ import Layout from "../layouts/Layout.astro";
 	*/
   }
 
+  .namePlace {
+    cursor: pointer;
+    color: red;
+  }
+
   @media screen and (min-width: 768px) {
     main {
       grid-template-rows: 15% 100%;
@@ -158,8 +158,16 @@ import Layout from "../layouts/Layout.astro";
 </style>
 
 <script>
-  import { createTrip } from "../js/map";
-  import { textStream, textItinerary } from "../js/steamTextAi";
+  import {
+    createTrip,
+    goToLocations,
+    textStream,
+    textItinerary,
+    getInfoAboutCity,
+    getInfoAboutPlaces,
+	validateTextCity,
+	replaceCaracteres
+  } from "../js/index";
 
   const form = document.querySelector("form");
   const loader = document.getElementById("loader");
@@ -168,43 +176,51 @@ import Layout from "../layouts/Layout.astro";
     loader.style.display = "flex";
     e.preventDefault();
     const costumerKey = e.target[0].value;
-    sessionStorage.setItem("apiKey", costumerKey);
     const targetCity = e.target[1].value;
-
-    console.log(targetCity);
-    const coord = await textStream(
-      targetCity,
-      "getLocationCities",
-      loader,
-      costumerKey
+	
+    const { locationMap, type } = await getInfoAboutCity(
+		textStream,
+		targetCity,
+		loader,
+		costumerKey
     );
-    const [longitud, latitud] = await JSON.parse(coord);
-    const type = await textStream(
-      targetCity,
-      "getIsCountryOrCity",
-      loader,
-      costumerKey
-    );
-    const locationMap = [parseFloat(longitud), parseFloat(latitud)];
+	const nameCity = await validateTextCity(costumerKey, "getValidateNameCity", locationMap)
+	const nameCityValidate = nameCity === replaceCaracteres(targetCity).toLowerCase();
+	console.log("🚀 ~ form.addEventListener ~ nameCityValidate:", nameCityValidate)
 
-    const places = await textStream(
-      targetCity,
-      "getSuggestionsPlaces",
-      loader,
-      costumerKey
-    );
-    const placesnames = Object.keys(JSON.parse(places));
-    const textPlacesNames = placesnames.join(", ").replace(/_/g, " ");
+    const isInvalidCity =
+      (locationMap === null) ||
+      (locationMap[0] === 0 && locationMap[1] === 0) ||
+      (isNaN(locationMap[0]) && isNaN(locationMap[1]));
 
-    textItinerary(
-      targetCity,
-      textPlacesNames,
-      "getItinerary",
-      loader,
-      costumerKey
-    );
+    if (!nameCityValidate) {
+      alert("La ciudad ingresada no es válida");
+      loader.style.display = "none";
+    } else {
+      const { places, textPlacesNames } = await getInfoAboutPlaces(
+        textStream,
+        targetCity,
+        loader,
+        costumerKey
+      );
 
-    createTrip(locationMap, JSON.parse(places), loader, type, costumerKey);
+		console.log("🚀 ~ form.addEventListener ~ places", places)
+
+      textItinerary(
+        targetCity,
+        textPlacesNames,
+        "getItinerary",
+        loader,
+        costumerKey,
+        JSON.parse(places),
+        goToLocations
+      );
+
+      createTrip(locationMap, JSON.parse(places), loader, type, costumerKey);
+	  loader.style.display = "none";
+
+
+    }
 
     history.replaceState(null, "", location.pathname);
   });

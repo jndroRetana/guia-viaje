@@ -1,4 +1,4 @@
-import { infoPlace } from "./steamTextAi";
+import { infoPlace } from "../ai/steamTextAi";
 import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
 
 const symbol = {
@@ -90,9 +90,10 @@ const symbology = new CIMSymbol({ data: { type: "CIMSymbolReference", symbol } }
 export const showPoints = async (places, view, Graphic, Point, loader, costumerKey) => {
   Object.keys(places).forEach(async (place) => {
     const content = await infoPlace(place.replace(/_/g, " "), "getStoryPlaces", loader, costumerKey);
-    const [longitud, latitud] = Object.values(places[place]);
+    const {longitud, latitud} = places[place];
 
     const locationMap = [longitud, latitud];
+    console.log("🚀 ~ Object.keys ~ locationMap:", locationMap)
     view.graphics.add(
       new Graphic({
         // // Data attributes returned

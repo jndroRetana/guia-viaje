@@ -1,8 +1,6 @@
-import { streamText, generateText } from "ai";
+import { generateText } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
-import { prompts } from "./prompts";
-
-const apiKey = sessionStorage.getItem("apiKey");
+import { prompts, goToLocations, replaceCaracteres } from "../index";
 
 const openaiObject = (apiKey) =>
   createOpenAI({
@@ -54,7 +52,9 @@ export const textItinerary = async (
   places: string,
   promptName: string = "getSuggestionsPlaces",
   loader: HTMLElement,
-  apiKey: string
+  apiKey: string,
+  locations: any,
+  goToTest: any
 ) => {
   const openai = openaiObject(apiKey);
   try {
@@ -65,9 +65,44 @@ export const textItinerary = async (
 
     const itinerary = document.querySelector("#itinerary");
     itinerary.innerHTML = "";
-    const test = [];
     itinerary.innerHTML += result.text;
+    const test = document.querySelectorAll(".namePlace");
+
+    test.forEach((element) => {
+      element.addEventListener("click", (e) => {
+        const targetElement = e.target as HTMLElement;
+        const keyObjet = targetElement.textContent.replace(/ /g, "_");
+        const { longitud, latitud } = locations[keyObjet];
+        goToLocations(
+          {
+            target: [longitud, latitud],
+            zoom: 18,
+          },
+          {
+            animationMode: "always",
+          }
+        );
+      });
+    });
   } catch (error) {
     loader.style.display = "none";
+  }
+};
+
+export const validateTextCity = async (
+  apiKey,
+  promptName = "getValidateNameCity",
+  location
+) => {
+  const openai = openaiObject(apiKey);
+  try {
+    const result = await generateText({
+      model: openai("gpt-3.5-turbo"),
+      prompt: prompts[promptName](location),
+    });
+
+    return replaceCaracteres(result.text).toLowerCase();
+  } catch (error) {
+    return error.toString();
   }
 };
