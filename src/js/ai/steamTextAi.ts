@@ -1,6 +1,6 @@
 import { generateText } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
-import { prompts, goToLocations, replaceCaracteres } from "../index";
+import { prompts, goToLocations, replaceCaracteres, openPopup } from "../index";
 
 const openaiObject = (apiKey) =>
   createOpenAI({
@@ -66,13 +66,19 @@ export const textItinerary = async (
     const itinerary = document.querySelector("#itinerary");
     itinerary.innerHTML = "";
     itinerary.innerHTML += result.text;
-    const test = document.querySelectorAll(".namePlace");
+    const textTags = document.querySelectorAll(".namePlace");
 
-    test.forEach((element) => {
+    const popupTemplatesArray = sessionStorage.getItem("popupTemplates");
+
+    textTags.forEach((element) => {
       element.addEventListener("click", (e) => {
         const targetElement = e.target as HTMLElement;
-        const keyObjet = targetElement.textContent.replace(/ /g, "_");
+        const textContent = targetElement.textContent;
+        const keyObjet = textContent.replace(/ /g, "_");
         const { longitud, latitud } = locations[keyObjet];
+        const popupTemplatesFilter = JSON.parse(popupTemplatesArray).filter(popup => popup.title === textContent);
+        const popupTemplate = popupTemplatesFilter.length > 0 ? popupTemplatesFilter[0] : { title: "", content: "" };
+        openPopup([longitud, latitud], popupTemplate);
         goToLocations(
           {
             target: [longitud, latitud],

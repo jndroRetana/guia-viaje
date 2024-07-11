@@ -1,4 +1,5 @@
 import { infoPlace } from "../ai/steamTextAi";
+import { createPopupTemplate, getImage } from "../index";
 import CIMSymbol from "@arcgis/core/symbols/CIMSymbol";
 
 const symbology = new CIMSymbol({
@@ -94,16 +95,20 @@ export const showPoints = async (
   Graphic,
   Point,
   loader,
-  costumerKey
+  costumerKey,
+  nameCity
 ) => {
-  Object.keys(places).forEach(async (place) => {
-    const content = await infoPlace(
-      place.replace(/_/g, " "),
-      "getStoryPlaces",
-      loader,
-      costumerKey
-    );
+  const popupTemplatesArray = [];
+
+  await Object.keys(places).forEach(async (place) => {
     const { longitud, latitud } = places[place];
+
+    const popupTemplate = await createPopupTemplate(
+      place,
+      loader,
+      costumerKey,
+      nameCity
+    );
 
     const locationMap = [longitud, latitud];
     view.graphics.add(
@@ -112,12 +117,12 @@ export const showPoints = async (
         geometry: new Point(locationMap),
         symbol: symbology,
 
-        popupTemplate: {
-          title: place.replace(/_/g, " "),
-          content: `<p><br>${content}</p>`,
-        },
+        popupTemplate,
       })
     );
+    popupTemplatesArray.push(popupTemplate);
+
+    sessionStorage.setItem("popupTemplates", JSON.stringify(popupTemplatesArray));
   });
 
   setTimeout(() => {

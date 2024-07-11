@@ -1,4 +1,4 @@
-import { TEXT_MESSAGE_ITINERARY } from "../index";
+import { getImage, infoPlace, TEXT_MESSAGE_ITINERARY } from "../index";
 
 export const defaultMessageItinerary = () => {
   const itinerary = document.querySelector("#itinerary");
@@ -49,6 +49,39 @@ export const getInfoAboutPlaces = async (
 };
 
 export const replaceCaracteres = (text) => {
-    //remplazar caracteres con acentos
-    return text.replaceAll("á", "a").replaceAll("é", "e").replaceAll("í", "i").replaceAll("ó", "o").replaceAll("ú", "u");
-}
+  //remplazar caracteres con acentos
+  return text
+    .replaceAll("á", "a")
+    .replaceAll("é", "e")
+    .replaceAll("í", "i")
+    .replaceAll("ó", "o")
+    .replaceAll("ú", "u");
+};
+
+export const createPopupTemplate = async (
+  place,
+  loader,
+  costumerKey,
+  nameCity
+) => {
+    
+  const content = await infoPlace(
+    place.replace(/_/g, " "),
+    "getStoryPlaces",
+    loader,
+    costumerKey
+  );
+
+  const image = await getImage(`${place.replace(/_/g, " ")}, ${nameCity}`);
+  const imageTag =
+    image.image !== ""
+      ? `<img src="${image.image}" alt="${image.alt}"></img>`
+      : "";
+
+  return {
+    title: place.replace(/_/g, " "),
+    content: `<p><br>${content}</p>
+        ${imageTag}
+        `,
+  };
+};
