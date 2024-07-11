@@ -4,7 +4,7 @@ const createOptions = (text: string) => {
   return {
     method: "POST",
     headers: {
-      "x-rapidapi-key": "551165212dmsh52ad8b5affeb18dp1445bdjsn4f03af29adc9",
+      "x-rapidapi-key": import.meta.env.RAPIDAPI_KEY as string,
       "x-rapidapi-host": "google-api31.p.rapidapi.com",
       "Content-Type": "application/json",
     },
