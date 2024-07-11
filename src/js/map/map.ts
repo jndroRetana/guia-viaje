@@ -17,12 +17,10 @@ const view = new MapView({
   center: [0, 0],
 });
 
-view.popup = {
-  dockEnabled: false,
-  dockOptions: {
+view.popup.dockEnabled = false;
+view.popup.dockOptions = {
     buttonEnabled: false,
     breakpoint: false,
-  },
 };
 
 const expand = new Expand({

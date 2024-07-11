@@ -187,11 +187,6 @@ import Layout from "../layouts/Layout.astro";
 	const nameCity = await validateTextCity(costumerKey, "getValidateNameCity", locationMap)
 	const nameCityValidate = nameCity === replaceCaracteres(targetCity).toLowerCase();
 
-    const isInvalidCity =
-      (locationMap === null) ||
-      (locationMap[0] === 0 && locationMap[1] === 0) ||
-      (isNaN(locationMap[0]) && isNaN(locationMap[1]));
-
     if (!nameCityValidate) {
       alert("La ciudad ingresada no es válida");
       loader.style.display = "none";
