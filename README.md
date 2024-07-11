@@ -31,7 +31,7 @@ Está aplicación web genera una guía turística con ChatGPT, donde te recomien
 
 Todos los comandos se ejecutan desde la raíz del proyecto, desde una terminal:
 
-| Command                   | Action                                           |
+| Comando                   | Acción                                           |
 | :------------------------ | :----------------------------------------------- |
 | `npm install`             | Instalar dependencias                            |
 | `npm run dev`             | Iniciar servidor local dev en `localhost:4321`      |
