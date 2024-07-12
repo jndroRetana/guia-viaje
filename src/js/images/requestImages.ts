@@ -1,10 +1,13 @@
-const url = "https://google-api31.p.rapidapi.com/imagesearch";
+const urlRapidApi = "https://google-api31.p.rapidapi.com/imagesearch";
+const urlGoogleApi = "https://www.googleapis.com/customsearch/v1";
 
-const createOptions = (text: string) => {
+const prefix = import.meta.env.DEV ? "PUBLIC" : "SECRET";
+
+const createOptionsRapidApi = (text: string) => {
   return {
     method: "POST",
     headers: {
-      "x-rapidapi-key": import.meta.env.RAPIDAPI_KEY as string,
+      "x-rapidapi-key": import.meta.env[`${prefix}_RAPIDAPI_KEY`] as string,
       "x-rapidapi-host": "google-api31.p.rapidapi.com",
       "Content-Type": "application/json",
     },
@@ -20,11 +23,23 @@ const createOptions = (text: string) => {
     }),
   };
 };
+const createUrlGoogleApi = (text: string) => {
+  const url = new URL(urlGoogleApi);
+  const params = {
+    q: text,
+    cx: import.meta.env[`${prefix}_GOOGLE_SEARCH_CX`] as string,
+    key: import.meta.env[`${prefix}_GOOGLE_SEARCH_KEY`] as string,
+    searchType: "image",
+  };
+  url.search = new URLSearchParams(params).toString();
 
-export const getImage = async (text: string) => {
-  const options = createOptions(text);
+  return url.toString();
+};
+
+const rapidApiTask = async (text: string) => {
+  const options = createOptionsRapidApi(text);
   try {
-    const response = await fetch(url, options);
+    const response = await fetch(urlRapidApi, options);
     const result = await response.json();
     const dataImage =
       result.result?.length > 0
@@ -36,6 +51,36 @@ export const getImage = async (text: string) => {
     console.error(error);
 
     return { image: "", alt: "" };
+  }
+};
 
+const googleApiTask = async (text: string) => {
+  const url = createUrlGoogleApi(text);
+  try {
+    const response = await fetch(url);
+    const result = await response.json();
+    const dataImage =
+      result.items?.length > 0
+        ? { image: result.items[0].link, alt: text }
+        : { image: "", alt: "" };
+
+    return dataImage;
+  } catch (error) {
+    console.error(error);
+
+    return { image: "", alt: "" };
+  }
+};
+
+export const getImage = async (text: string) => {
+  const isActiveRapidApi = import.meta.env[`${prefix}_ACTIVE_RAPIDAPI`] as string;
+  const isActiveGoogleApi = import.meta.env[`${prefix}_ACTIVE_GOOGLE_SEARCH`] as string;
+
+  if (isActiveRapidApi === "true") {
+    return await rapidApiTask(text);
+  } else if (isActiveGoogleApi === "true") {
+    return await googleApiTask(text);
+  } else {
+    return { image: "", alt: "" };
   }
 };
