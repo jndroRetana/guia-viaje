@@ -27,8 +27,8 @@ const createUrlGoogleApi = (text: string) => {
   const url = new URL(urlGoogleApi);
   const params = {
     q: text,
-    cx: import.meta.env[`${prefix}_GOOGLE_SEARCH_CX`] as string,
-    key: import.meta.env[`${prefix}_GOOGLE_SEARCH_KEY`] as string,
+    cx: import.meta.env.SECRET_GOOGLE_SEARCH_CX as string,
+    key: import.meta.env.SECRET_GOOGLE_SEARCH_KEY as string,
     searchType: "image",
   };
   url.search = new URLSearchParams(params).toString();
@@ -73,14 +73,6 @@ const googleApiTask = async (text: string) => {
 };
 
 export const getImage = async (text: string) => {
-  const isActiveRapidApi = import.meta.env[`${prefix}_ACTIVE_RAPIDAPI`] as string;
-  const isActiveGoogleApi = import.meta.env[`${prefix}_ACTIVE_GOOGLE_SEARCH`] as string;
 
-  if (isActiveRapidApi === "true") {
-    return await rapidApiTask(text);
-  } else if (isActiveGoogleApi === "true") {
-    return await googleApiTask(text);
-  } else {
-    return { image: "", alt: "" };
-  }
+  return await googleApiTask(text);
 };
